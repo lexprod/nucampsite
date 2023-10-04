@@ -108,7 +108,7 @@ const styles = StyleSheet.create(
             margin: 20
         },
         cardText: {
-            textShadowColor: 'rgba(0,0,0,1',
+            textShadowColor: 'rgba(0,0,0,1)',
             textShadowOffset: { width: 1, height: 1 },
             textShadowRadius: 20,
             textAlign: 'center',
