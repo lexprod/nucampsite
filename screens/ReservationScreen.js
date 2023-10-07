@@ -5,6 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Animatable from 'react-native-animatable';
 import { Alert } from 'react-native';
 import { ZoomIn } from 'react-native-reanimated';
+import * as Notifications from 'expo-notifications';
 
 const ReservationScreen = () => {
     const [campers, setCampers] = useState(1);
@@ -34,12 +35,13 @@ const ReservationScreen = () => {
                 {
                     text: 'Cancel',
                     style: 'cancel',
-                    onPress: () => { resetForm() }
+                    onPress: () => { resetForm(); }
                 },
                 {
                     text: 'OK',
                     onPress: () => {
-                        resetForm()
+                        presentLocalNotification(date.toLocaleDateString('en-US'));
+                        resetForm();
                     }
                 }
             ]);
@@ -50,7 +52,35 @@ const ReservationScreen = () => {
         setHikeIn(false);
         setDate(new Date());
         setShowCalendar(false);
-    }
+    };
+
+    const presentLocalNotification = async (reservationDate) => {
+        const sendNotification = () => {
+            Notifications.setNotificationHandler({
+                handleNotification: async () => ({
+                    shouldShowAlert: true,
+                    shouldPlaySound: true,
+                    shouldSetBadge: true
+                })
+            });
+
+            Notifications.scheduleNotificationAsync({
+                content: {
+                    title: 'Your Campsite Reservation Search',
+                    body: `Search for ${reservationDate} requested`
+                },
+                trigger: null
+            });
+        };
+
+        let permissions = await Notifications.getPermissionsAsync();
+        if (!permissions.granted) {
+            permissions = await Notifications.requestPermissionsAsync();
+        }
+        if (permissions.granted) {
+            sendNotification();
+        }
+    };
 
     return (
         <ScrollView>
